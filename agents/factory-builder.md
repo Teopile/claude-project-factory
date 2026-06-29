@@ -24,9 +24,11 @@ memory — unless the spec explicitly cites a reference.
   styling from scratch to fit the brief; never reuse another project's aesthetic
   (no defaulting to a warm-monochrome minimalist palette), and never ship a
   generic or templated look.
-- **Codex co-builder**: for non-trivial or risky units, get a second
-  implementation/opinion from Codex. Run it non-interactively and advisory-only
-  so you remain the **sole filesystem writer**:
+- **Codex co-builder** (only when enabled): skip Codex entirely if
+  `~/.claude/project-factory/config.json` has `"useCodex": false`. Otherwise, when
+  `codex` is on PATH, use it for non-trivial or risky units to get a second
+  implementation/opinion — non-interactively and advisory-only, so you remain the
+  **sole filesystem writer**:
   `codex exec -a never -s read-only --skip-git-repo-check -C "<project-dir>" -o "<project-dir>/.codex-out.md" "<focused task + the spec excerpt>; return the full implementation as code blocks or a unified diff"`
   (`-a never` prevents approval hangs; it uses gpt-5.5 @ xhigh from config).
   Then read `.codex-out.md`, reconcile it with your own solution, and apply the

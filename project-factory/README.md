@@ -1,4 +1,4 @@
-﻿# Project Factory â€” Autonomous Build Harness
+# Project Factory â€” Autonomous Build Harness
 
 A reusable, multi-agent pipeline that takes a short idea and drives it to a
 completed, verified project with minimal human intervention.
@@ -14,7 +14,9 @@ loop until the whole project is done â†’ only then does it come back to you
 - **Models.** Primary builder/reasoner = Claude **Fable 5**. Co-builder =
   **Codex `gpt-5.5` @ `xhigh`** (config already in `~/.codex/config.toml`),
   invoked by the Builder via `codex exec`. Cheap fan-out subagents may use
-  `haiku`. Never downgrade the main loop.
+  `haiku`. Never downgrade the main loop. Codex is **optional** â€” `/factory`
+  offers it on first run and records the choice in `config.json` (`useCodex`);
+  without it the Builder runs Claude-only.
 - **Run engine = Hybrid.** Each phase runs as a background **Workflow**; a
   **cron heartbeat** resumes the loop if a session/context resets. The build
   must survive restarts and run to completion unattended.
@@ -151,4 +153,3 @@ batched question round. Answer those once; after sign-off it runs to completion.
 - [x] Orchestrator workflow (`engine/factory-loop.workflow.js`)
 - [x] `/factory` kickoff command (cron heartbeat wired at runtime)
 - [ ] Dry-run smoke test on a tiny throwaway idea
-

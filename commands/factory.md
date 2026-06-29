@@ -1,4 +1,4 @@
-﻿---
+---
 description: Kick off an autonomous Project Factory build from a one-line idea.
 argument-hint: <your idea + a few details>
 ---
@@ -13,6 +13,24 @@ ABSOLUTE paths when you call tools - the Workflow tool needs an absolute
 `scriptPath` and an absolute `projectPath`.
 
 Do this:
+
+0. First-run setup (Codex co-builder). Read `~/.claude/project-factory/config.json`
+   (treat a missing file as "not yet onboarded"). If `onboarded` is true, skip to
+   step 1. Otherwise ask the user ONE yes/no question:
+   "Use the OpenAI Codex CLI as a second co-builder alongside Claude?
+   (recommended - a second model cross-checks the hard parts.)"
+   - If NO: write `{ "onboarded": true, "useCodex": false }` to config.json; go to step 1.
+   - If YES:
+       a. If `codex` is not on PATH, install it: `npm i -g @openai/codex`.
+       b. Run `codex login status`. If it does NOT say "Logged in", sign them in:
+          start `codex login` in the BACKGROUND, read its output for the sign-in
+          URL, and present that URL to the user as a clickable link to finish
+          sign-in (on a desktop it also auto-opens the browser; if it does not,
+          open it for them - Windows `Start-Process <url>`, macOS `open <url>`,
+          Linux `xdg-open <url>`). Poll `codex login status` until it reports
+          "Logged in" (give them time to finish in the browser).
+       c. Write `{ "onboarded": true, "useCodex": true }` to config.json.
+   This onboarding runs only once; never prompt again on later projects.
 
 1. Scaffold. Choose a short slug `<name>`. Create `~/Projects/<name>/docs/` and
    seed it from `~/.claude/project-factory/templates/` (master-spec,
