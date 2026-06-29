@@ -1,11 +1,11 @@
 # Claude Project Factory
 
-Turn a one-line idea into a finished, verified project â€” autonomously.
+Turn a one-line idea into a finished, verified project — autonomously.
 
 Project Factory is a multi-agent harness for **[Claude Code](https://claude.com/claude-code)**.
 You give it an idea; it researches the space, writes an exhaustive spec, invents a
-**bespoke** design, then runs a continuous **build â†’ review â†’ QA â†’ document** loop
-until the whole thing is built and verified â€” surviving session resets and asking
+**bespoke** design, then runs a continuous **build → review → QA → document** loop
+until the whole thing is built and verified — surviving session resets and asking
 you almost nothing along the way.
 
 > Primary builder: Claude (Fable 5). Optional co-builder: OpenAI Codex (`gpt-5.5`).
@@ -14,8 +14,8 @@ you almost nothing along the way.
 
 1. `/factory "your idea"`.
 2. The **Spec Architect** researches competitors (web only), writes the full doc
-   set â€” master spec, a from-scratch `design-direction.md`, and a
-   dependency-ordered work breakdown â€” and asks you one batched round of
+   set — master spec, a from-scratch `design-direction.md`, and a
+   dependency-ordered work breakdown — and asks you one batched round of
    questions.
 3. You answer once. It flips to autonomous mode.
 4. For every unit of work: the **Builder** implements it (Claude + Codex), then
@@ -31,7 +31,7 @@ Five agents, one engine, full autonomy with a watchdog. Architecture lives in
 ## Why each project looks different
 
 Project Factory deliberately starts every project greenfield. Agents are walled
-off from your other repositories and from a recurring "house style" â€” the Spec
+off from your other repositories and from a recurring "house style" — the Spec
 Architect invents a unique art direction from each idea's own concept, and the
 Reviewer blocks any generic or reused look. No two builds wear the same skin.
 
@@ -68,15 +68,15 @@ Answer the intake questions once, then let it run. Built projects land in
 
 ## Configuration
 
-- **Projects root** â€” defaults to `~/Projects`; change it in `commands/factory.md`.
-- **Codex** â€” used automatically if `codex` is on your PATH; skipped otherwise.
-- **Autonomy & budget** â€” see the policy section of `project-factory/README.md`.
+- **Projects root** — defaults to `~/Projects`; change it in `commands/factory.md`.
+- **Codex** — used automatically if `codex` is on your PATH; skipped otherwise.
+- **Autonomy & budget** — see the policy section of `project-factory/README.md`.
 
 ## Status
 
-Early but working â€” proven end-to-end on its first real build. This is meant to
+Early but working — proven end-to-end on its first real build. This is meant to
 grow; issues and PRs welcome.
 
 ## License
 
-[MIT](LICENSE) Â© Theo (@Teopile)
+[MIT](LICENSE) © Theo (@Teopile)
