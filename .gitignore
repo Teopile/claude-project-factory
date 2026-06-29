@@ -1,0 +1,12 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Codex advisory scratch file
+.codex-out.md
+
+# Node
+node_modules/
