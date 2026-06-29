@@ -25,6 +25,18 @@
 ## Signature moment
 - The one distinctive element that makes this project recognizably itself:
 
+## Asset sources & resources
+For each, note the chosen source and whether it was user-specified (US) or
+selected by the Architect (AI). Fill every row — derive from the user's URL if
+they gave one, otherwise research and choose the best fit for this concept.
+- Icons — set/library + source (URL, package, or `AI: <name>`):
+- Animations / motion — library or technique + source:
+- Fonts — families + source (Google Fonts, foundry, self-hosted) + license:
+- Imagery / illustration — style + source (stock, generated, custom):
+- UI components — library/kit + source (or `bespoke`):
+- Brand / style reference(s) — any URLs the user gave to derive from:
+- Gaps filled by research — what was chosen without a user source, and why:
+
 ## Guardrails
 - Accessibility: contrast AA, reduced-motion honored, keyboard-first.
 - Performance: no decorative cost that hurts the core flow.

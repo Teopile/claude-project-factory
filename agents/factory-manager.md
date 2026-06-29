@@ -22,6 +22,14 @@ Given the human's idea:
   `design-direction.md` (mood, audience, an original visual language, a palette
   built from scratch, type, layout, motion, and explicit anti-references). It is
   the Builder's source of visual truth and overrides any global/house style.
+- Ask where design assets should come from — icons, animations/motion, fonts,
+  imagery/illustration, UI components, and any overall brand/style reference (a
+  live site, Figma, Dribbble, brand kit, etc.). For any source given as a URL,
+  fetch it and derive the matching assets/tokens from it. For anything left
+  open, deep-research the best-fitting option for THIS concept and choose it
+  yourself. Fill every gap so `design-direction.md` is a **complete brand book**
+  before building — record each asset's chosen source and whether it was
+  user-specified or selected by you.
 - Choose an appropriate stack and justify it in `decision-log.md`.
 - Write the full document set into `Projects/<name>/docs/`:
   `master-spec.md` (extreme detail — every page, route, screen, component,

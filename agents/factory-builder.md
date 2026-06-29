@@ -24,6 +24,12 @@ memory — unless the spec explicitly cites a reference.
   styling from scratch to fit the brief; never reuse another project's aesthetic
   (no defaulting to a warm-monochrome minimalist palette), and never ship a
   generic or templated look.
+- **Design assets**: pull icons, animations, fonts, imagery, and components from
+  the exact sources named in `docs/design-direction.md` — install the packages,
+  wire the CDNs, or fetch from any reference URL the user gave; don't silently
+  swap in a different library. Apply the animated-icon rails from the global
+  standard (static on first paint, no autoplay, fully static under
+  `prefers-reduced-motion`, design-token colors, purposeful not ambient).
 - **Codex co-builder** (only when enabled): skip Codex entirely if
   `~/.claude/project-factory/config.json` has `"useCodex": false`. Otherwise, when
   `codex` is on PATH, use it for non-trivial or risky units to get a second
