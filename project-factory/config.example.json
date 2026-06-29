@@ -1,4 +1,6 @@
 {
   "onboarded": false,
-  "useCodex": null
+  "useCodex": null,
+  "usage": "balanced",
+  "effort": "high"
 }

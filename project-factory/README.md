@@ -134,6 +134,20 @@ that as the source of visual truth. Global/house design skills are used for
 **craft only** — never to impose a recurring signature look. Never default to a
 generic template or any prior project's palette, components, or layout.
 
+## Usage & effort
+
+Two knobs, chosen on first run and stored in `config.json` (editable any time, or
+overridable per run):
+
+- **`usage`** — how much compute the factory spends: `lean`, `balanced`,
+  `thorough`, or `unlimited`. It scales per-unit fix iterations and how hard
+  agents fan out, research, and verify. `unlimited` tells every agent to go
+  all-out and stop caring about budget.
+- **`effort`** — the reasoning effort every agent runs at: `low`, `medium`,
+  `high`, `xhigh`, or `max`. The engine passes this to each agent call.
+
+Higher settings mean better results at higher cost and longer wall-clock.
+
 ## How to start a project
 
 ```

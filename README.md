@@ -70,6 +70,7 @@ Answer the intake questions once, then let it run. Built projects land in
 
 - **Projects root** — defaults to `~/Projects`; change it in `commands/factory.md`.
 - **Codex** — used automatically if `codex` is on your PATH; skipped otherwise.
+- **Usage & effort** - set on first run (lean/balanced/thorough/unlimited and low->max); stored in config.json.
 - **Autonomy & budget** — see the policy section of `project-factory/README.md`.
 
 ## Status
