@@ -27,7 +27,7 @@ Projects live in `~/Projects/<name>/`. Stack is chosen per-project by the Archit
 isolated git worktree), **reviewer** (adversarial two-pass + reward-hack scan),
 **qa** (manual + automated, runs for real), **verifier** (INDEPENDENT objective
 gate), **doc** (keeps docs true, merges, commits). Every agent runs at the chosen
-effort and may spawn its own subagents/skills.
+effort and may spawn its own subagents/skills. Agents apply the reasoning lenses in `lenses.md` as relevant.
 
 ## Document set (per project, `~/Projects/<name>/docs/`)
 `master-spec.md`, `design-direction.md` (bespoke brand book), `constitution.md`
