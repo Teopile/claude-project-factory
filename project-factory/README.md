@@ -79,6 +79,7 @@ generic/templated/reused look as a HIGH finding.
   when `phase: done` or `NEEDS_ATTENTION.md` exists.
 - Watchdog: per-unit iteration cap + oscillation detection. Real token/$ cost is
   tracked by the CLI; `caps.maxUsd` is an optional human-set ceiling.
+- Cross-platform: agents use OS-appropriate shell commands (PowerShell/cmd on Windows, bash on macOS/Linux) and home-relative `~` paths.
 
 ## Start a project
 ```

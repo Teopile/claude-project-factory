@@ -43,6 +43,18 @@ Reviewer blocks any generic or reused look. No two builds wear the same skin.
   second-model co-builder: `npm i -g @openai/codex`. Without it, the Builder
   runs Claude-only. The first `/factory` run offers to install Codex and sign you in.
 
+## Where it runs
+
+Project Factory is built on **Claude Code**, so it runs anywhere Claude Code does:
+- Terminal Claude Code on **macOS, Windows (PowerShell or cmd), and Linux**.
+- The **Claude Code VS Code / JetBrains** extensions.
+- The **Claude Code desktop and mobile apps**.
+
+The `~/.claude/` install is shared by all of them, so once installed it's
+available everywhere on that machine. It does NOT run inside the plain claude.ai
+chat app (web or the consumer desktop app) - that product doesn't have the
+workflow, subagent, command, or cron engine the factory is built on.
+
 ## Install
 
 ```bash
