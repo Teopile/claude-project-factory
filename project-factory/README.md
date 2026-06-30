@@ -96,3 +96,5 @@ golden task set.
 - [x] eval golden-set + regression gate (`eval/`)
 - [x] dry-run / preview mode
 - [x] observability trace (`trace.jsonl`) + cheaper verify/plan routing
+- [x] opt-in review gates (spec / milestone checkpoints)
+- [ ] eval-gated prompt optimizer (offline; propose + A/B vs the eval; only after the eval loop is proven)
