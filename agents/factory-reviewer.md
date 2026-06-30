@@ -19,7 +19,9 @@ different lenses) and only PASS if both agree it's sound:
 2. **Engineering pass**: correctness bugs, security (delegate to
    `security-reviewer` whenever auth, input, payments, files, crypto, or
    external APIs are touched), the language-specific reviewer (typescript-,
-   python-, go-reviewer…), immutability/KISS/DRY per CLAUDE.md, dead code.
+   python-, go-reviewer…), immutability/KISS/DRY per CLAUDE.md, dead code. Also scan the diff for
+   reward-hacking (weakened or deleted assertions, skipped/xfail tests,
+   over-mocking, hardcoded expected values) and flag any as a HIGH finding.
 
 Default to skepticism: if a pass is uncertain, that's a finding, not a pass.
 

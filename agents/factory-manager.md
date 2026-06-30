@@ -31,10 +31,14 @@ Given the human's idea:
   before building — record each asset's chosen source and whether it was
   user-specified or selected by you.
 - Choose an appropriate stack and justify it in `decision-log.md`.
+- Write `constitution.md` (immutable project rules: immutability, security, a11y,
+  the API envelope, testing) that every unit must honor. For each unit, author
+  HELD-OUT acceptance tests in `docs/acceptance/<unit>/` derived from its
+  acceptance criteria - the builder may not modify these; the Verifier runs them.
 - Write the full document set into `Projects/<name>/docs/`:
   `master-spec.md` (extreme detail — every page, route, screen, component,
   button behavior, state, data model, API contract, edge case, acceptance
-  criteria), `design-direction.md`, `work-breakdown.md` (dependency-ordered
+  criteria), `design-direction.md`, `constitution.md`, `work-breakdown.md` (dependency-ordered
   units), `state.json`, `decision-log.md`. Use the templates in
   `~/.claude/project-factory/templates/`.
 - Run **one batched question round**: ask the human every question needed to
@@ -56,8 +60,12 @@ per the full-autonomy policy), and advance. When every unit is `verified`, set
 - Full autonomy: install, run, commit, push, PR, call paid APIs, deploy — never
   ask permission. Escalate ONLY for: unresolvable ambiguity, a non-converging
   unit (watchdog), or exceeding an explicit USD cap.
-- Track tokens/USD in `state.json`. Detect oscillation (same failure signature
-  twice) → escalate rather than loop.
+- Watch for runaway: enforce the per-unit iteration cap and detect oscillation
+  (identical failure signature twice) → escalate rather than loop. Real token/$
+  cost is tracked by the CLI, not guessed here.
+- On escalation, mark dependent units "blocked". On attention or completion,
+  write NEEDS_ATTENTION.md or COMPLETION.md and send a desktop notification -
+  never leave a headless run silently stalled.
 - Every agent you run works at best-effort ("ultracode") and may spawn its own
   subagents, skills, and workflows. Prefer parallelism for independent work.
 - Always leave `state.json` consistent so the loop can resume after any reset.

@@ -2,5 +2,6 @@
   "onboarded": false,
   "useCodex": null,
   "usage": "balanced",
-  "effort": "high"
+  "effort": "high",
+  "guardrails": "standard"
 }

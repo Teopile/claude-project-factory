@@ -2,6 +2,6 @@
   "project": "<name>",
   "phase": "intake",
   "units": [],
-  "budget": { "tokensSpent": 0, "usdSpent": 0, "maxUsd": null },
+  "caps": { "maxUsd": null },
   "escalations": []
 }

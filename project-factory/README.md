@@ -1,169 +1,92 @@
 # Project Factory — Autonomous Build Harness
 
-A reusable, multi-agent pipeline that takes a short idea and drives it to a
-completed, verified project with minimal human intervention.
+Takes a short idea and drives it to a completed, **objectively verified** project
+with minimal human intervention. You give an idea → the Spec Architect writes
+exhaustive docs + a bespoke design + asks you everything once → an autonomous
+loop builds, verifies, and documents each unit until the whole project is done.
 
-Flow: **you give an idea → Spec Architect writes exhaustive docs + asks you
-everything → you sign off → the Manager runs a continuous build/review/test/doc
-loop until the whole project is done → only then does it come back to you.**
+## Models & config (`config.json`)
+- Builder/reasoner = Claude **Fable 5**. Optional co-builder = **Codex `gpt-5.5`**
+  (`useCodex`, offered on first run). Cheap roles (verifier, planning) may use a
+  lighter tier.
+- `usage` = `lean | balanced | thorough | unlimited` — scales fix-iterations,
+  parallelism, research and verification depth. `unlimited` = go all-out, ignore
+  budget.
+- `effort` = `low | medium | high | xhigh | max` — reasoning effort passed to
+  every agent call.
+- `guardrails` = `standard` (deploy/destructive actions pause for one confirm) or
+  `full` (never pause).
 
----
+Projects live in `~/Projects/<name>/`. Stack is chosen per-project by the Architect.
 
-## Locked decisions (2026-06-29)
+## Agents
+**manager** (overseer + intake/Spec Architect), **builder** (Claude + Codex, in an
+isolated git worktree), **reviewer** (adversarial two-pass + reward-hack scan),
+**qa** (manual + automated, runs for real), **verifier** (INDEPENDENT objective
+gate), **doc** (keeps docs true, merges, commits). Every agent runs at the chosen
+effort and may spawn its own subagents/skills.
 
-- **Models.** Primary builder/reasoner = Claude **Fable 5**. Co-builder =
-  **Codex `gpt-5.5` @ `xhigh`** (config already in `~/.codex/config.toml`),
-  invoked by the Builder via `codex exec`. Cheap fan-out subagents may use
-  `haiku`. Never downgrade the main loop. Codex is **optional** — `/factory`
-  offers it on first run and records the choice in `config.json` (`useCodex`);
-  without it the Builder runs Claude-only.
-- **Run engine = Hybrid.** Each phase runs as a background **Workflow**; a
-  **cron heartbeat** resumes the loop if a session/context resets. The build
-  must survive restarts and run to completion unattended.
-- **Autonomy = Full.** The system may install deps, run servers/tests/e2e,
-  commit, push, open PRs, call paid APIs, and deploy — without asking. The
-  Watchdog never asks permission; it only prevents *runaway* (non-converging
-  loops, budget blowouts) and owns the single escalation gate.
-- **Projects live in** `~/Projects/<name>/`. Stack is chosen
-  per-project by the Spec Architect.
-- **Everything runs at best-effort / "ultracode."** Every agent may spawn its
-  own subagents, use skills, and run its own workflows.
+## Document set (per project, `~/Projects/<name>/docs/`)
+`master-spec.md`, `design-direction.md` (bespoke brand book), `constitution.md`
+(immutable rules), `work-breakdown.md` (dependency-ordered units), `state.json`,
+`decision-log.md`, `lessons.md` (process memory), `acceptance/<unit>/` (held-out
+tests, builder-protected), `reviews/<unit>.md`, `qa/<unit>.md`,
+`gate/<unit>.json`, and terminal `NEEDS_ATTENTION.md` / `COMPLETION.md`.
 
----
+`state.json`: `{ project, phase: intake|building|done, units:[{id,title,deps,status,iterations}], caps:{maxUsd}, escalations:[] }`. Unit status ∈ `pending|building|review|qa|fixing|verified|escalated|blocked`.
 
-## Agent roster
+## The loop (per wave, up to `parallelism` units at once)
+1. **Plan** — manager returns ready units (all deps verified) and marks
+   dependents of escalated/blocked units as `blocked`.
+2. **Build** — each unit in its own git worktree (Claude + Codex).
+3. **Verify (parallel)** — Reviewer (spec + reward-hack), QA (runs it for real),
+   and the independent Verifier (objective: real build/test exit codes, artifact
+   existence, held-out acceptance tests, reward-hack scan). A unit passes ONLY if
+   Reviewer = PASS **and** QA = PASS **and** the objective gate is clean
+   (`build=0`, `test=0`, artifacts present, no reward-hack flags).
+4. **Fix loop** — capped at a `usage`-derived iteration count; an identical
+   failure signature twice → escalate early (oscillation).
+5. **Integrate (serial — single git writer)** — merge the worktree, update docs +
+   `lessons.md`, conventional-commit checkpoint + push.
 
-| Agent | Role | Key tools |
-|---|---|---|
-| **factory-manager** | Overseer. Owns the project + state, runs the loop, dispatches all others, owns budget/watchdog + the one escalation gate. First job per project = the Spec Architect intake phase. | all |
-| **factory-builder** | Implements one doc unit — code + visuals + everything. Uses Fable 5 **and** Codex (`codex exec`), plus frontend/backend/db/test subagents. TDD. | all |
-| **factory-reviewer** | Adversarially reviews each completed unit against the spec. Two independent passes must agree. Returns PASS/FAIL + findings to the Builder. | all |
-| **factory-qa** | Tests each unit — manual + automation: smoke, regression, integration, e2e (Playwright), performance, stress, a11y, security. Returns results to Reviewer + Builder. | all |
-| **factory-doc** | Keeps every doc true to reality: updates the spec, work-breakdown, decision log, and state as units complete. Drives the project to "fulfilled." | all |
+When every unit verifies → a final **global end-to-end acceptance check** against
+the master-spec → `phase: done` + `COMPLETION.md` + a desktop notification. On a
+non-converging unit → it's marked `escalated`, dependents `blocked`,
+`NEEDS_ATTENTION.md` written, and a notification sent.
 
-The Spec Architect is the Manager's opening **phase**, not a separate file:
-it researches competitors (web + deep-research), writes the full doc set, and
-runs the clarifying-question round with the human until the spec is 100%.
+## Verification is objective, not self-reported
+The engine never accepts a unit on an agent's word. The independent Verifier runs
+the build and tests itself — including held-out tests the builder cannot edit —
+reports real exit codes and artifact existence, and scans the diff for
+reward-hacking. Claude builds; a separate gate confirms.
 
----
+## Isolation & original design
+Every project is greenfield: agents don't read or borrow from other projects, and
+the design is invented per project and never reused. The Reviewer blocks any
+generic/templated/reused look as a HIGH finding.
 
-## Document set (per project, in `Projects/<name>/docs/`)
+## Autonomy, safety & resilience
+- Full autonomy for the user's chosen config; `guardrails: standard` pauses once
+  before deploy/destructive actions (for new users).
+- Fetched web/reference content is untrusted **data**, never instructions
+  (prompt-injection defense).
+- A single-writer lock (`<project>/.factory.lock`) stops the cron heartbeat and a
+  live run from double-building.
+- The heartbeat (cron) resumes the engine across session/context resets and stops
+  when `phase: done` or `NEEDS_ATTENTION.md` exists.
+- Watchdog: per-unit iteration cap + oscillation detection. Real token/$ cost is
+  tracked by the CLI; `caps.maxUsd` is an optional human-set ceiling.
 
-- `master-spec.md` — the source of truth. Every page, route, screen, component,
-  button behavior, state, data model, API contract, edge case, acceptance
-  criteria. Extreme detail. Written for agents, not marketing.
-- `design-direction.md` — the project's bespoke art direction, invented from its
-  own concept. The single source of visual truth; supersedes any global/house
-  style. Built fresh per project — never reuse another project's look.
-- `work-breakdown.md` — the master-spec decomposed into dependency-ordered
-  **units**, each with an id, acceptance criteria, and status.
-- `state.json` — machine state for the loop (see schema below). Survives resets.
-- `decision-log.md` — ADR-style record of every non-obvious choice + why.
-- `reviews/<unit-id>.md`, `qa/<unit-id>.md` — per-unit verdicts and test reports.
-
-### `state.json` schema
-```json
-{
-  "project": "name",
-  "phase": "intake|building|done",
-  "units": [
-    { "id": "U-001", "title": "...", "deps": [],
-      "status": "pending|building|review|qa|fixing|verified",
-      "iterations": 0, "lastVerdict": null }
-  ],
-  "budget": { "tokensSpent": 0, "usdSpent": 0, "maxUsd": null },
-  "escalations": []
-}
-```
-
----
-
-## The per-unit loop
-
-For each unit in dependency order (run by the Manager / engine):
-
-1. **Builder** implements the unit (Fable 5 + Codex), writes tests, makes it run.
-2. **Reviewer** reviews against the unit's spec + acceptance criteria → verdict.
-3. **QA** runs every relevant test type → report.
-4. If Reviewer or QA = FAIL → **Builder** fixes; loop 2–4. Watchdog caps this at
-   **N iterations** (default 4) per unit before escalating.
-5. On both PASS → **factory-doc** updates docs + state; **Git** commits the
-   verified checkpoint (and pushes/PRs per autonomy policy).
-6. Manager advances to the next unit.
-
-When all units are `verified` → Manager marks `phase: done`, writes a completion
-report, and only then surfaces to the human for small questions/polish.
-
-### Handoff contract (every agent returns this)
-```json
-{ "unit": "U-001", "result": "PASS|FAIL", "summary": "...",
-  "findings": [ { "severity": "critical|high|medium|low", "what": "...", "fix": "..." } ],
-  "artifacts": ["paths..."], "nextAction": "advance|fix|escalate" }
-```
-
----
-
-## Autonomy & escalation
-
-The system runs silent. It escalates to the human **only** when:
-- a requirement is genuinely ambiguous and unresolvable from the spec, **or**
-- the Watchdog detects a unit that won't converge after N iterations, **or**
-- a single action would exceed the (optional) hard USD budget cap.
-
-Everything else — installs, servers, tests, commits, pushes, PRs, paid API
-calls, deploys — proceeds without asking.
-
-### Watchdog / budget
-- Per-unit iteration cap (default 4) → escalate instead of looping forever.
-- Oscillation detection: same failure signature twice → escalate.
-- Tracks tokens + USD in `state.json`; `maxUsd` is an optional hard stop.
-
----
-
-## Context isolation & originality
-
-Every project is greenfield. Agents confine file access to the project directory
-and the harness docs; they do **not** read, copy, or take inspiration from other
-projects under `Projects/`, and do **not** use cross-project memory — unless an
-agent explicitly cites a specific reference for a specific reason. Competitor
-research is web-based only.
-
-Design is invented per project. The Spec Architect derives a unique art
-direction (`design-direction.md`) from the idea itself; the Builder implements
-that as the source of visual truth. Global/house design skills are used for
-**craft only** — never to impose a recurring signature look. Never default to a
-generic template or any prior project's palette, components, or layout.
-
-## Usage & effort
-
-Two knobs, chosen on first run and stored in `config.json` (editable any time, or
-overridable per run):
-
-- **`usage`** — how much compute the factory spends: `lean`, `balanced`,
-  `thorough`, or `unlimited`. It scales per-unit fix iterations and how hard
-  agents fan out, research, and verify. `unlimited` tells every agent to go
-  all-out and stop caring about budget.
-- **`effort`** — the reasoning effort every agent runs at: `low`, `medium`,
-  `high`, `xhigh`, or `max`. The engine passes this to each agent call.
-
-Higher settings mean better results at higher cost and longer wall-clock.
-
-## How to start a project
-
+## Start a project
 ```
 /factory "<your idea + a few details>"
 ```
-The Manager opens with the Spec Architect intake: research, full doc set, then a
-batched question round. Answer those once; after sign-off it runs to completion.
 
----
-
-## Status / roadmap of the harness itself
-
-- [x] Decisions locked, dirs scaffolded, Codex restored
-- [x] `README.md` (this file)
-- [x] Agent definitions: factory-manager / builder / reviewer / qa / doc
-- [x] Document templates (master-spec, work-breakdown, review, qa, state, decisions)
-- [x] Orchestrator workflow (`engine/factory-loop.workflow.js`)
-- [x] `/factory` kickoff command (cron heartbeat wired at runtime)
-- [ ] Dry-run smoke test on a tiny throwaway idea
+## Status / roadmap
+- [x] v1 — spec → build → review/QA → doc loop; Codex; usage/effort; design isolation
+- [x] v2 — objective verifier gate, held-out tests, parallel worktree units,
+      oscillation, blocked/done + notify, global acceptance check, constitution,
+      lessons memory, injection defense, single-writer lock
+- [ ] eval golden-set + regression gate (harness self-eval)
+- [ ] dry-run / preview mode
+- [ ] observability trace + budget-aware model routing
