@@ -3,5 +3,6 @@
   "useCodex": null,
   "usage": "balanced",
   "effort": "high",
-  "guardrails": "standard"
+  "guardrails": "standard",
+  "reviewGates": "spec"
 }

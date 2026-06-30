@@ -16,6 +16,9 @@ loop builds, verifies, and documents each unit until the whole project is done.
   every agent call.
 - `guardrails` = `standard` (deploy/destructive actions pause for one confirm) or
   `full` (never pause).
+- `reviewGates` = `none` (full auto), `spec` (pause after the plan for your
+  approval before building), or `milestones` (also pause after the first verified
+  slice, via `MILESTONE.md` — approve to resume). `none` by default.
 
 Projects live in `~/Projects/<name>/`. Stack is chosen per-project by the Architect.
 

@@ -30,6 +30,8 @@ const U = USAGE[usage] || USAGE.balanced
 const maxIters = _args.maxIterations || U.iters
 const maxWaves = _args.maxWaves || U.waves
 const par = _args.parallelism || U.par
+const reviewGates = _args.reviewGates || 'none'        // none | spec | milestones
+const milestoneApproved = !!_args.milestoneApproved
 
 log(`effort=${effort} verify=${verifyEffort} usage=${usage} maxIters=${maxIters} parallelism=${par}`)
 
@@ -77,8 +79,9 @@ function sig(findings) {
 const processed = []
 let waves = 0
 let needsAttention = false
+let milestonePaused = false
 
-while (waves < maxWaves) {
+while (waves < maxWaves && !milestonePaused) {
   waves++
   if (budget.total && budget.remaining() < 50_000) { log('Budget target nearly hit - stopping; heartbeat will resume.'); needsAttention = true; break }
 
@@ -144,6 +147,7 @@ while (waves < maxWaves) {
         { agentType: 'factory-doc', label: `doc:${o.u.id}`, phase: 'Integrate', effort: verifyEffort },
       )
       processed.push({ unit: o.u.id, status: 'verified' })
+      if (reviewGates === 'milestones' && !milestoneApproved && processed.filter(p => p.status === 'verified').length === 1) { log('First milestone reached - pausing for review.'); milestonePaused = true; break }
     } else {
       await agent(
         `factory-manager: unit ${o.u.id} did not converge. Set it "escalated" in state.json, mark its dependents "blocked", and append a clear escalation entry (blocking findings + exactly what you need from the human).`,
@@ -157,7 +161,12 @@ while (waves < maxWaves) {
 
 // --- terminal: notify + final acceptance ------------------------------------
 phase('Notify')
-if (needsAttention) {
+if (milestonePaused) {
+  await agent(
+    `factory-manager: the first milestone (the initial vertical slice) is built and verified. Write ${projectPath}/docs/MILESTONE.md summarizing what's done and what's next, and send a desktop notification asking the human to review and approve continuing. Do NOT set phase to done.`,
+    { agentType: 'factory-manager', label: 'notify:milestone', phase: 'Notify', effort: verifyEffort },
+  )
+} else if (needsAttention) {
   await agent(
     `factory-manager: this run needs human attention (escalated/blocked units or a budget stop). Write ${projectPath}/docs/NEEDS_ATTENTION.md summarizing what is blocked and the exact questions for the human, and send a desktop notification. Do NOT set phase to done.`,
     { agentType: 'factory-manager', label: 'notify:attention', phase: 'Notify', effort: verifyEffort },
@@ -169,4 +178,4 @@ if (needsAttention) {
   )
 }
 
-return { projectPath, effort, usage, parallelism: par, waves, processed, needsAttention }
+return { projectPath, effort, usage, parallelism: par, waves, processed, needsAttention, milestonePaused }
