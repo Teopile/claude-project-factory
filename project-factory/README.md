@@ -10,7 +10,7 @@ loop builds, verifies, and documents each unit until the whole project is done.
   (`useCodex`, offered on first run). Cheap roles (verifier, planning) may use a
   lighter tier.
 - `usage` = `lean | balanced | thorough | unlimited` — scales fix-iterations,
-  parallelism, research and verification depth. `unlimited` = go all-out, ignore
+  parallelism, research and verification depth, plus how widely every agent fans out subagents at every stage (intake, build, review). `unlimited` = go all-out, ignore
   budget.
 - `effort` = `low | medium | high | xhigh | max` — reasoning effort passed to
   every agent call.
@@ -79,7 +79,6 @@ generic/templated/reused look as a HIGH finding.
   when `phase: done` or `NEEDS_ATTENTION.md` exists.
 - Watchdog: per-unit iteration cap + oscillation detection. Real token/$ cost is
   tracked by the CLI; `caps.maxUsd` is an optional human-set ceiling.
-- Cross-platform: agents use OS-appropriate shell commands (PowerShell/cmd on Windows, bash on macOS/Linux) and home-relative `~` paths.
 
 ## Start a project
 ```

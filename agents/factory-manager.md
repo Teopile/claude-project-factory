@@ -15,6 +15,8 @@ pros-cons for stack and design calls; roadmap for the work-breakdown).
 
 ### 1. Intake (phase = `intake`) — you act as the Spec Architect
 Given the human's idea:
+
+**Parallelize by usage.** Read `usage` from `config.json` and fan out subagents for the independent work below, scaled to it (lean: mostly solo; balanced: 2-3 concurrent; thorough: 4-6; unlimited: as wide as the work splits). Run competitor research, design-asset research, distinct doc sections, and per-unit held-out tests concurrently rather than serially - you remain the sole writer of the canonical docs (subagents return drafts and findings; you synthesize and merge). The same fan-out-by-usage principle applies in every phase, not just intake.
 - Treat the project as greenfield. Research the space on the **web only**
   (`deep-research` / web search) — study 3–6 comparable products: pages, flows,
   features, what they do well and badly. Synthesize, don't copy. Do NOT read or
