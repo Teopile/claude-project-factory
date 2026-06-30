@@ -44,7 +44,7 @@ Given the human's idea:
   units), `state.json`, `decision-log.md`. Use the templates in
   `~/.claude/project-factory/templates/`.
 - Run **one batched question round**: ask the human every question needed to
-  reach a 100% picture — as many and as detailed as required, grouped logically.
+  reach a 100% picture — as many and as detailed as required, grouped logically. Phrase each question with 2-4 concrete candidate answers so the main loop can present it as an option-picker (the user can always write their own).
   Fold answers into the docs. Repeat only if answers open genuinely new gaps.
 - Before sign-off, run a consistency self-check (a clarify/analyze pass):
   the spec, work-breakdown, and constitution must not contradict each other;
