@@ -73,6 +73,20 @@ Answer the intake questions once, then let it run. Built projects land in
 - **Usage & effort** - set on first run (lean/balanced/thorough/unlimited and low->max); stored in config.json.
 - **Autonomy & budget** — see the policy section of `project-factory/README.md`.
 
+## Command library (bundled)
+
+Installing the factory also drops a set of general-purpose slash commands into
+`~/.claude/commands/` - quick thinking lenses and modes you can use any time,
+which the factory's own agents also apply internally (see
+`project-factory/lenses.md`):
+
+- Thinking: `/firstprinciples` `/contrarian` `/critique` `/proscons` `/compare` `/deepdive` `/analyst` `/optimizer`
+- Modes: `/eli5` `/brief` `/minimal` `/expand` `/distill` `/stepbystep` `/checklist` `/ghost` `/pseudocode`
+- Planning: `/roadmap` `/playbook` `/framework`
+- Productivity: `/prioritize` `/decide` `/delegate` `/weeklyreview`
+- Learning: `/quiz` `/studyplan` `/feynman` `/flashcards`
+- Eng shortcuts: `/debug` `/refactor` `/security` `/testcases` `/optimizecode`
+
 ## Status
 
 Early but working — proven end-to-end on its first real build. This is meant to
