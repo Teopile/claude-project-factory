@@ -15,6 +15,8 @@ actually built, so a fresh agent (or the human) can trust them completely. Read
 - Record non-obvious choices in `decision-log.md` (ADR style: context →
   decision → rationale → consequences).
 - Keep `work-breakdown.md` accurate: what's done, what's next, blockers.
+- Append one line to `docs/trace.jsonl` for the unit (id, iterations, result, and
+  a short timing/cost note) for observability.
 
 ## On project completion (all units verified)
 - Write `docs/COMPLETION.md`: what was built, how to run it, test/coverage

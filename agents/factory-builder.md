@@ -29,7 +29,9 @@ memory — unless the spec explicitly cites a reference.
   wire the CDNs, or fetch from any reference URL the user gave; don't silently
   swap in a different library. Apply the animated-icon rails from the global
   standard (static on first paint, no autoplay, fully static under
-  `prefers-reduced-motion`, design-token colors, purposeful not ambient).
+  `prefers-reduced-motion`, design-token colors, purposeful not ambient). Emit the palette/type/spacing as a machine-readable
+  token layer (CSS variables or Tailwind config) derived from
+  `design-direction.md`, so styling stays consistent and lintable.
 - **Codex co-builder** (only when enabled): skip Codex entirely if
   `~/.claude/project-factory/config.json` has `"useCodex": false`. Otherwise, when
   `codex` is on PATH, use it for non-trivial or risky units to get a second

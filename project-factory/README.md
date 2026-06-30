@@ -81,12 +81,15 @@ generic/templated/reused look as a HIGH finding.
 ```
 /factory "<your idea + a few details>"
 ```
+Add `--dry-run` (or ask to preview) to stop after the spec/design/plan for review,
+without building. Run `eval/run-eval.workflow.js` to score the harness against the
+golden task set.
 
 ## Status / roadmap
 - [x] v1 — spec → build → review/QA → doc loop; Codex; usage/effort; design isolation
 - [x] v2 — objective verifier gate, held-out tests, parallel worktree units,
       oscillation, blocked/done + notify, global acceptance check, constitution,
       lessons memory, injection defense, single-writer lock
-- [ ] eval golden-set + regression gate (harness self-eval)
-- [ ] dry-run / preview mode
-- [ ] observability trace + budget-aware model routing
+- [x] eval golden-set + regression gate (`eval/`)
+- [x] dry-run / preview mode
+- [x] observability trace (`trace.jsonl`) + cheaper verify/plan routing

@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "description": "Golden set of small, representative build tasks for harness regression testing. Each task is built fresh and run through the same independent objective gate the real factory uses; a task passes only if the gate is clean and all acceptance criteria are met.",
+  "tasks": [
+    {
+      "id": "tip-calc",
+      "prompt": "Single-file index.html tip calculator: bill amount, tip % presets plus custom, party size, live tip/total/per-person.",
+      "stack": "vanilla html/css/js",
+      "acceptance": ["math correct to 2 decimals", "live recompute on input", "presets + custom + stepper + reset work", "no console errors", "keyboard accessible"]
+    },
+    {
+      "id": "todo",
+      "prompt": "Single-page in-memory todo list: add, complete (toggle), delete, and filter all/active/done.",
+      "stack": "vanilla html/css/js",
+      "acceptance": ["add/complete/delete work", "filter works", "empty state shown", "no console errors"]
+    },
+    {
+      "id": "md-preview",
+      "prompt": "Markdown preview: textarea on the left, live-rendered HTML on the right.",
+      "stack": "vanilla html/css/js",
+      "acceptance": ["headings/bold/lists/links render", "updates live", "raw HTML escaped safely (no XSS)", "no console errors"]
+    },
+    {
+      "id": "countdown",
+      "prompt": "Countdown timer: input seconds, start/pause/reset, shows mm:ss, alerts at zero.",
+      "stack": "vanilla html/css/js",
+      "acceptance": ["counts down accurately", "start/pause/reset work", "stops at 0 with an alert", "no console errors"]
+    }
+  ],
+  "gate": { "requireBuildExit0": true, "requireTestExit0": true, "requireArtifacts": true, "noRewardHack": true },
+  "regression": { "passThreshold": 1.0, "note": "All golden tasks must pass; a drop below threshold fails the gate." }
+}

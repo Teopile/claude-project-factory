@@ -44,6 +44,9 @@ Given the human's idea:
 - Run **one batched question round**: ask the human every question needed to
   reach a 100% picture — as many and as detailed as required, grouped logically.
   Fold answers into the docs. Repeat only if answers open genuinely new gaps.
+- Before sign-off, run a consistency self-check (a clarify/analyze pass):
+  the spec, work-breakdown, and constitution must not contradict each other;
+  every unit needs acceptance criteria + held-out tests; fix any coverage gaps.
 - On sign-off, set `phase: building` and stop asking. From here you go silent
   except for true escalations.
 
