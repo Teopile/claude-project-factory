@@ -86,7 +86,7 @@ generic/templated/reused look as a HIGH finding.
 ```
 Add `--dry-run` (or ask to preview) to stop after the spec/design/plan for review,
 without building. Run `eval/run-eval.workflow.js` to score the harness against the
-golden task set.
+golden task set. Check progress with `/factory status <name>`; resume a stalled run with `/factory resume <name>`.
 
 ## Status / roadmap
 - [x] v1 — spec → build → review/QA → doc loop; Codex; usage/effort; design isolation
